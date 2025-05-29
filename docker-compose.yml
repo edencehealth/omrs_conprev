@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mariadb
+    volumes:
+      - "./input:/work:rw"
+      - "dbdata:/var/lib/mysql"
+    environment:
+      MARIADB_ROOT_PASSWORD: "testing"
+    ports:
+      - "3306:3306"
+    init: true
+
+  omrs_conprev:
+    depends_on:
+      - db
+    image: edence/omrs_conprev
+    build: .
+    environment:
+      CHUNK_SIZE: 100000
+      CSV_DIALECT: "excel"  # see also: unix ; https://docs.python.org/3/library/csv.html
+      DB_DATABASE: "openmrs"
+      DB_HOST: "db"
+      DB_PASSWORD: "openmrs"
+      DB_USER: "openmrs"
+      LOG_LEVEL: "DEBUG"
+      OVERWRITE: 1
+      NO_PASSWORD: 0
+      DEFER_EXCEPTIONS: 1
+    command:
+      - time_zone
+      - time_zone_transition
+    volumes:
+      - "./output:/output"
+
+volumes:
+  dbdata:

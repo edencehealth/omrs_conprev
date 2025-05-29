@@ -1,0 +1,7 @@
+.DS_Store
+.mypy_cache
+.venv
+input/*
+misc
+output/*
+venv
