@@ -1,6 +1,7 @@
 # omrs_conprev
 
-This is a Docker utility for the **OpenMRS Concept Prevalence Study**, which executes a query of an OpenMRS 
+This is a Docker utility for the **OpenMRS Concept Prevalence Study** *(based on the
+[mysql2csv](https://github.com/edencehealth/mysql2csv) repo)*, which executes a query of an OpenMRS 
 MySQL / MariaDB database and saves the result into a CSV file. It is published publicly to
 [Docker Hub at edence/omrs_conprev](https://hub.docker.com/r/edence/omrs_conprev).
 For more information about the **OpenMRS Concept Prevalence Study** please see 
@@ -76,14 +77,12 @@ options:
 
 #### Example Command-line Invocation
 
-In this example we're dumping a mysql internal table from a MariaDB server on the docker host:
+In this example we're running the OpenMRS Prevalence Study scripton an OpenMRS MySQL/MariaDB server on a host on the local network:
 
 ```sh
-$ docker run --rm --volume "$(pwd)/output:/output" edence/omrs_conprev:latest --host host.docker.internal --user root --password testing --database mysql --overwrite time_zone
-2023-01-31 06:38:23,775 WARNING time_zone: overwriting existing output file /output/time_zone.csv
-2023-01-31 06:38:23,779 INFO time_zone: wrote 1000-row chunk to /output/time_zone.csv
-2023-01-31 06:38:23,780 INFO time_zone: wrote 787-row chunk to /output/time_zone.csv
-2023-01-31 06:38:23,781 INFO time_zone: finished dumping table to /output/time_zone.csv (1787 rows)
+$ docker run --rm --volume "$(pwd):/output" edence/omrs_conprev:latest --host 192.168.1.123 --user root --password testing --database mysql --overwrite
+2025-05-29 11:48:31,820 INFO concept-prevalence.csv: finished dumping results to /output/concept-prevalence.csv (964 rows)
+2025-05-29 11:48:31,820 INFO exiting
 ```
 
 ### Docker Compose Configuration
@@ -103,9 +102,6 @@ services:
       LOG_LEVEL: "DEBUG"
       OVERWRITE: 1
       DEFER_EXCEPTIONS: 1
-    command:
-      - time_zone
-      - time_zone_transition
     volumes:
       - "./output:/output"
 ```
